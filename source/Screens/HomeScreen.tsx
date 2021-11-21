@@ -1,9 +1,28 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Product, { IProduct } from '../Components/Product';
 
 
 const HomeScreen = () => {
+    const products: IProduct[] = [
+        {
+            name: "Apple",
+            type: "Interger",
+            price: 2.00
+        },
+        {
+            name: "Orange",
+            type: "Interger",
+            price: 5.00
+        },
+        {
+            name: "Grapes",
+            type: "Interger",
+            price: 20.00
+        },
+    ];
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.mainTextContainer}>
@@ -22,17 +41,9 @@ const HomeScreen = () => {
                 }}
             />
             <View style={styles.listContainer}>
-
-                <View style={styles.productListRow}>
-                    <Text>Name</Text>
-                    <Text>Type</Text>
-                    <Text>Price</Text>
-                    <View style={{ flexDirection: 'row'}}>
-                        <Ionicons style={{paddingRight: 15}} name="create-outline" size={20} />
-                        <Ionicons name="trash-outline" size={20} />
-                    </View>
-
-                </View>
+                <FlatList data={products} renderItem={({ item, index }) => (
+                    <Product key={index} name={item.name} type={item.type} price={item.price} />
+                )} />
                 <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>
             </View>
             <View style={styles.addButtonContainer}>
@@ -76,18 +87,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         //justifyContent: "center",
         margin: 5,
-    },
-    productListRow: {
-        flexDirection: 'row',
-        width: "100%",
-        justifyContent: "space-between",
-        //alignContent: 'flex-start',
-        padding: 10,
-        backgroundColor: 'lightgrey',
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 8,
-        marginBottom: 5,
     },
     listTextInfo: {
         fontSize: 18,
