@@ -28,8 +28,8 @@ const styles = StyleSheet.create({
     productContainer: {
         flexDirection: 'row',
         //alignItems: 'center',
-        width: "100%",
-        justifyContent: "space-evenly",
+        width: "92%",
+        justifyContent: "space-between",
         alignContent: 'flex-start',
         padding: 10,
         backgroundColor: 'lightgrey',

@@ -1,11 +1,28 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Product, { IProduct } from '../Components/Product';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { StackScreens } from '../helpers/types';
 
 
-const HomeScreen = () => {
+const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => {
     const products: IProduct[] = [
+        {
+            name: "Apple",
+            type: "Interger",
+            price: 2.00
+        },
+        {
+            name: "Orange",
+            type: "Interger",
+            price: 5.00
+        },
+        {
+            name: "Grapes",
+            type: "Interger",
+            price: 20.00
+        },
         {
             name: "Apple",
             type: "Interger",
@@ -43,11 +60,11 @@ const HomeScreen = () => {
             <View style={styles.listContainer}>
                 <FlatList data={products} renderItem={({ item, index }) => (
                     <Product key={index} name={item.name} type={item.type} price={item.price} />
-                )} />
+                )} keyExtractor={(item) => item.name} />
                 <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>
             </View>
             <View style={styles.addButtonContainer}>
-                <Ionicons name='add-circle' size={65} color='purple' />
+                <Ionicons onPress={() => { props.navigation.navigate("Add", {title: "Create New Product"}); }} name='add-circle' size={65} color='purple' />
             </View>
         </SafeAreaView>
     );
@@ -64,6 +81,7 @@ const styles = StyleSheet.create({
         height: 60,
         backgroundColor: "purple",
         justifyContent: 'center',
+        marginTop: 38,
     },
     mainText: {
         color: 'white',
