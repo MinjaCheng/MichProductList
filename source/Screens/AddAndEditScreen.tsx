@@ -1,29 +1,63 @@
 import { Ionicons } from '@expo/vector-icons'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
-import React, { FC, useState } from 'react'
+import React, { FC, useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { AppContext } from '../context/AppContext'
 import { StackScreens } from '../helpers/types'
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "Add">> = (props) => {
 
     const params = props.route.params;
+    const context = useContext(AppContext);
     const [disable, setDisable] = useState(false);
+
+    const defaultProducts = [
+        {
+            name: "Apple",
+            type: "Interger",
+            price: 2.50
+        },
+        {
+            name: "Orange",
+            type: "Interger",
+            price: 5.00
+        },
+        {
+            name: "Grapes",
+            type: "Interger",
+            price: 20.00
+        }
+    ];
+
+    const [allProducts, setAllProducts] = useState(defaultProducts);
     const [name, setName] = useState("");
-    const [productType, setProductType] = useState("");
-    const [price, setPrice] = useState("");
+    const [productType, setProductType] = useState("Product Type");
+    const [price, setPrice] = useState(0);
+
+
+    useEffect(() => {
+        
+    }, [])
+
+    const addProduct = () => {
+        //setAllProducts([...allProducts, { name: name, type: productType, price: price }])
+        context?.addProduct({ name: name, type: productType, price: price })
+        
+    }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{params.title}</Text>
             <TextInput placeholder="Name" onChangeText={setName} style={styles.input} />
-            <Text style={[styles.input, { padding: 20, color: 'grey' }]} onPress={() => { }}>Product Type</Text>
-            <TextInput placeholder="Price" onChangeText={setPrice} style={styles.input} />
+            <Text style={[styles.input, { padding: 20, color: 'grey' }]} onPress={() => { }}>{productType}</Text>
+            <TextInput placeholder="Price" keyboardType='numeric' onChangeText={(text) => { setPrice(parseFloat(text)) }} style={styles.input} />
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.buttonSave, {backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green'}]} disabled={disable} onPress={() => { console.log("spara")}}>
+                <TouchableOpacity style={[styles.buttonSave, { backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green' }]} disabled={disable} onPress={addProduct}>
                     <Text style={styles.textButtonSave}>SAVE</Text>
                     <Ionicons name='download-outline' size={32} color="white" />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttonCancel} onPress={() => { }}>
+                <TouchableOpacity style={styles.buttonCancel} onPress={() => { props.navigation.pop() }}>
                     <Text style={styles.textButtonCancel}>CANCEL</Text>
                     <Ionicons name='close-circle-outline' size={33} />
                 </TouchableOpacity>
