@@ -7,6 +7,7 @@ import { StackScreens } from '../helpers/types'
 const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "Add">> = (props) => {
 
     const params = props.route.params;
+    const [disable, setDisable] = useState(false);
     const [name, setName] = useState("");
     const [productType, setProductType] = useState("");
     const [price, setPrice] = useState("");
@@ -18,7 +19,7 @@ const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "Add">> = (props
             <Text style={[styles.input, { padding: 20, color: 'grey' }]} onPress={() => { }}>Product Type</Text>
             <TextInput placeholder="Price" onChangeText={setPrice} style={styles.input} />
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.buttonSave} onPress={() => { }}>
+                <TouchableOpacity style={[styles.buttonSave, {backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green'}]} disabled={disable} onPress={() => { console.log("spara")}}>
                     <Text style={styles.textButtonSave}>SAVE</Text>
                     <Ionicons name='download-outline' size={32} color="white" />
                 </TouchableOpacity>
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
     },
     buttonSave: {
         flexDirection: 'row',
-        backgroundColor: 'green',
         width: "45%",
         padding: 5,
         borderColor: 'black',
