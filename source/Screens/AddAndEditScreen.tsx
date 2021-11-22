@@ -1,13 +1,14 @@
 import { Ionicons } from '@expo/vector-icons'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { FC, useState } from 'react'
-import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { StackScreens } from '../helpers/types'
 
 const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "Add">> = (props) => {
 
     const params = props.route.params;
     const [name, setName] = useState("");
+    const [productType, setProductType] = useState("");
     const [price, setPrice] = useState("");
 
     return (
@@ -17,14 +18,14 @@ const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "Add">> = (props
             <Text style={[styles.input, { padding: 20, color: 'grey' }]} onPress={() => { }}>Product Type</Text>
             <TextInput placeholder="Price" onChangeText={setPrice} style={styles.input} />
             <View style={styles.buttonContainer}>
-                <View style={styles.buttonSave}>
-                    <Text style={styles.textButtonSave} onPress={() => { }}>SAVE</Text>
+                <TouchableOpacity style={styles.buttonSave} onPress={() => { }}>
+                    <Text style={styles.textButtonSave}>SAVE</Text>
                     <Ionicons name='download-outline' size={32} color="white" />
-                </View>
-                <View style={styles.buttonCancel}>
-                    <Text style={styles.textButtonCancel} onPress={() => { }}>CANCEL</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.buttonCancel} onPress={() => { }}>
+                    <Text style={styles.textButtonCancel}>CANCEL</Text>
                     <Ionicons name='close-circle-outline' size={33} />
-                </View>
+                </TouchableOpacity>
             </View>
         </View>
     )
