@@ -11,9 +11,9 @@ export interface IProduct {
 const Product: React.FC<IProduct> = (props) => {
     return (
         <View style={styles.productContainer}>
-                <Text >{props.name}</Text>
-                <Text>{props.type}</Text>
-                <Text>{props.price}</Text>
+                <Text style={{ width: '28%'}}>{props.name}</Text>
+                <Text style={{ width: '28%', paddingStart:5}}>{props.type}</Text>
+                <Text style={{ width: '28%', paddingStart:8}}>$ {props.price.toFixed(2)}</Text>
             <View style={{ flexDirection: 'row' }}>
                 <Ionicons style={{ paddingRight: 15 }} name="create-outline" size={20} />
                 <Ionicons name="trash-outline" size={20} />
@@ -27,10 +27,7 @@ export default Product
 const styles = StyleSheet.create({
     productContainer: {
         flexDirection: 'row',
-        //alignItems: 'center',
-        width: "92%",
-        justifyContent: "space-between",
-        alignContent: 'flex-start',
+        width: "100%",
         padding: 10,
         backgroundColor: 'lightgrey',
         borderColor: 'black',

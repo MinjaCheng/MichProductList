@@ -11,7 +11,7 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
         {
             name: "Apple",
             type: "Interger",
-            price: 2.00
+            price: 2.50
         },
         {
             name: "Orange",
