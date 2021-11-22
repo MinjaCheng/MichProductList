@@ -40,6 +40,10 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
         },
     ];
 
+    const render = ({ item }: { item: IProduct }) => (
+        <Product name={item.name} type={item.type} price={item.price} />
+    );
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.mainTextContainer}>
@@ -58,13 +62,15 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
                 }}
             />
             <View style={styles.listContainer}>
-                <FlatList data={products} renderItem={({ item, index }) => (
-                    <Product key={index} name={item.name} type={item.type} price={item.price} />
-                )} keyExtractor={(item) => item.name} />
+                <FlatList
+                    data={products}
+                    renderItem={render}
+                    keyExtractor={(item, index) => index.toString()}
+                />
                 <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>
             </View>
             <View style={styles.addButtonContainer}>
-                <Ionicons onPress={() => { props.navigation.navigate("Add", {title: "Create New Product"}); }} name='add-circle' size={65} color='purple' />
+                <Ionicons onPress={() => { props.navigation.navigate("Add", { title: "Create New Product" }); }} name='add-circle' size={65} color='purple' />
             </View>
         </SafeAreaView>
     );
