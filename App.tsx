@@ -14,8 +14,7 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Add" component={AddAndEditScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Edit" component={AddAndEditScreen} />
+          <Stack.Screen name="AddorEdit" component={AddAndEditScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     </AppContextProvider>

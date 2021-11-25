@@ -1,21 +1,17 @@
 import React, { FC, useContext } from 'react';
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Product, { IProduct } from '../Components/Product';
+import Product from '../Components/Product';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackScreens } from '../helpers/types';
-import { AppContext } from '../context/AppContext';
+import { AppContext, Item } from '../context/AppContext';
 
 
 const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => {
     const context = useContext(AppContext);
 
-    const products: IProduct[] = [
-        
-    ];
-
-    const render = ({ item }: { item: IProduct }) => (
-        <Product name={item.name} type={item.type} price={item.price} />
+    const render = ({ item }: { item: Item }) => (
+        <Product name={item.name} type={item.type} price={item.price} />   
     );
 
     return (
@@ -36,16 +32,16 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
                 }}
             />
             <View style={styles.listContainer}>
-                <FlatList
-                    data={products}
+            {true && (<FlatList
+                    data={context?.items}
                     renderItem={render}
                     keyExtractor={(item, index) => index.toString()}
-                />
-                {true &&(
+                />)}
+                {false && (
                 <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text> )
             }</View>
             <View style={styles.addButtonContainer}>
-                <Ionicons onPress={() => { props.navigation.navigate("Add", { title: "Create New Product" }); }} name='add-circle' size={65} color='purple' />
+                <Ionicons onPress={() => { props.navigation.navigate("AddorEdit", { title: "Create New Product" }); }} name='add-circle' size={65} color='purple' />
             </View>
         </SafeAreaView>
     );

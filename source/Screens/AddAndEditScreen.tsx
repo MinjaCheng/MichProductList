@@ -1,57 +1,63 @@
 import { Ionicons } from '@expo/vector-icons'
+import { Picker } from '@react-native-picker/picker'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { AppContext } from '../context/AppContext'
 import { StackScreens } from '../helpers/types'
-import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
-const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "Add">> = (props) => {
+const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = (props) => {
 
     const params = props.route.params;
     const context = useContext(AppContext);
     const [disable, setDisable] = useState(false);
-
-    const defaultProducts = [
-        {
-            name: "Apple",
-            type: "Interger",
-            price: 2.50
-        },
-        {
-            name: "Orange",
-            type: "Interger",
-            price: 5.00
-        },
-        {
-            name: "Grapes",
-            type: "Interger",
-            price: 20.00
-        }
-    ];
-
-    const [allProducts, setAllProducts] = useState(defaultProducts);
     const [name, setName] = useState("");
-    const [productType, setProductType] = useState("Product Type");
-    const [price, setPrice] = useState(0);
+    const [price, setPrice] = useState("");
+    const [selectedProductType, setSelectedProductType] = useState("Product Type");
+    const [showIntegratedInfo, setShowIntegratedInfo] = useState(false);
 
 
     useEffect(() => {
-        
-    }, [])
+        if (name.length === 0 || price === "" || price === "0" || selectedProductType === "Product Type") {
+            setDisable(true);
+        }
+        else if (selectedProductType === "Integrated" && parseInt(price) >= 1000 && parseInt(price) <= 2600) {
+            setDisable(false);
+            setShowIntegratedInfo(false);
+             
+        } else if (selectedProductType === "Integrated" && parseInt(price) < 1000 || parseInt(price) > 2600) {
+            setShowIntegratedInfo(true);
+        }   
+        else if (selectedProductType === "Perpherial" && parseInt(price) > 0) {
+            setDisable(false);
+        }
+        else {
+            setDisable(true);
+        }
+    }, [name, price, selectedProductType]);
 
     const addProduct = () => {
-        //setAllProducts([...allProducts, { name: name, type: productType, price: price }])
-        context?.addProduct({ name: name, type: productType, price: price })
-        
+        const priceInt = parseInt(price);
+        const newItems = [...context!.items, { name: name, type: selectedProductType, price: priceInt }]
+        context?.setItems(newItems)
+        props.navigation.pop()
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{params.title}</Text>
             <TextInput placeholder="Name" onChangeText={setName} style={styles.input} />
-            <Text style={[styles.input, { padding: 20, color: 'grey' }]} onPress={() => { }}>{productType}</Text>
-            <TextInput placeholder="Price" keyboardType='numeric' onChangeText={(text) => { setPrice(parseFloat(text)) }} style={styles.input} />
+            <Picker style={[styles.input, { color: 'grey' }]}
+                selectedValue={selectedProductType}
+                onValueChange={(itemValue, itemIndex) => setSelectedProductType(itemValue)
+                 
+                }>
+                <Picker.Item label="Product Type" value="Product Type" />
+                <Picker.Item label="Integrated" value="Integrated" />
+                <Picker.Item label="Perpherial" value="Perpherial" />
+            </Picker>
+            <TextInput placeholder="Price" keyboardType='numeric' onChangeText={(number) => { setPrice(number) }} style={styles.input} />
+            {showIntegratedInfo && (<Text style={styles.textInfoIntegrated}>Integrated products may be anywhere within the range of 1000 to 2600 dollars.</Text>)}            
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.buttonSave, { backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green' }]} disabled={disable} onPress={addProduct}>
                     <Text style={styles.textButtonSave}>SAVE</Text>
@@ -73,7 +79,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         alignItems: 'center',
-        //justifyContent: 'center',
     },
     title: {
         marginTop: "35%",
@@ -84,17 +89,23 @@ const styles = StyleSheet.create({
     input: {
         width: "90%",
         padding: 15,
-        margin: 18,
+        marginTop: 40,
         backgroundColor: 'lightgrey',
         borderColor: 'black',
         borderWidth: 1,
         borderRadius: 5,
     },
+    textInfoIntegrated: {
+        fontSize: 12,
+        color: 'red',
+        paddingHorizontal: 35,
+        paddingTop: 5,
+    },
     buttonContainer: {
         flexDirection: 'row',
         width: "90%",
         justifyContent: 'space-evenly',
-        marginTop: 10,
+        marginTop: 30,
     },
     buttonSave: {
         flexDirection: 'row',

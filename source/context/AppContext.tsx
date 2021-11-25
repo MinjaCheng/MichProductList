@@ -1,22 +1,26 @@
 import React, {createContext, FC, useState } from "react";
 import { PressableAndroidRippleConfig } from "react-native";
 
+export interface Item {
+    name: string,
+    type: string,
+    price: number
+}
+
 interface IAppContext {
-    productList: any,
-    //addProduct: () => {}
-    addProduct: (object:any) => void;
+    items: Item[],
+    setItems: (data: Item[]) => void;
 }
 
 export const AppContext = createContext<IAppContext | undefined>(undefined);
 
 export const AppContextProvider: FC = ({children}) => {
-    const [productList, setProductList] = useState<any | any[]>([]);
-    const addProduct = (newProduct:Object) => setProductList((productList: any) => [...productList, newProduct])
-    console.log(productList);
+    const [items, setItems] = useState<Item[]>([]);
+    
     return (
         <AppContext.Provider value={{
-            productList,
-            addProduct
+            items,
+            setItems
         }}>
             {children}
         </AppContext.Provider>
