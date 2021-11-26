@@ -1,5 +1,5 @@
 import React, { FC, useContext } from 'react';
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { Alert, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Product from '../Components/Product';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -10,9 +10,32 @@ import { AppContext, Item } from '../context/AppContext';
 const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => {
     const context = useContext(AppContext);
 
-    const render = ({ item }: { item: Item }) => (
-        <Product name={item.name} type={item.type} price={item.price} />   
-    );
+    const render = ({ item }: { item: Item }) => {
+        return (
+            <Product
+                item={item}
+                edit={() => { props.navigation.navigate("AddorEdit", { title: "Edit Product" }) }}
+                onDelete={() => {
+                    Alert.alert("", "Are you sure you want to delete this product?", [
+                        {
+                            text: "CANCEL"
+                        }, {
+                            text: "DELETE", onPress: () => {
+                                deleteProduct(item.name)
+                            }
+                        }
+                    ])
+                }}
+            />
+        );
+    }
+
+    const deleteProduct = (name: string) => {
+        if (context?.items) {
+            const filteredData = context?.items?.filter(item => item.name !== name);
+            context?.setItems(filteredData);
+        }
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -32,16 +55,17 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
                 }}
             />
             <View style={styles.listContainer}>
-            {true && (<FlatList
+                {context?.items && (<FlatList
                     data={context?.items}
                     renderItem={render}
                     keyExtractor={(item, index) => index.toString()}
                 />)}
-                {false && (
-                <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text> )
-            }</View>
+                {!context?.items && (
+                    <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>)}
+            </View>
+
             <View style={styles.addButtonContainer}>
-                <Ionicons onPress={() => { props.navigation.navigate("AddorEdit", { title: "Create New Product" }); }} name='add-circle' size={65} color='purple' />
+                <Ionicons onPress={() => { props.navigation.navigate("AddorEdit", { title: "Create New Product" }) }} name='add-circle' size={65} color='purple' />
             </View>
         </SafeAreaView>
     );
@@ -80,7 +104,6 @@ const styles = StyleSheet.create({
     listContainer: {
         flex: 1,
         alignItems: "center",
-        //justifyContent: "center",
         margin: 5,
     },
     listTextInfo: {

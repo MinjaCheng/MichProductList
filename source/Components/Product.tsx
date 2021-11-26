@@ -1,17 +1,23 @@
 import { Ionicons } from '@expo/vector-icons'
-import React from 'react'
+import React, { FC } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Item } from '../context/AppContext'
 
-const Product: React.FC<Item> = (props) => {
+interface IProduct {
+    item: Item,
+    edit: () => void,
+    onDelete: () => void,
+}
+
+const Product: FC<IProduct> = (props) => {
     return (
         <View style={styles.productContainer}>
-                <Text style={{ width: '28%'}}>{props.name}</Text>
-                <Text style={{ width: '28%', paddingStart:5}}>{props.type}</Text>
-                <Text style={{ width: '28%', paddingStart:8}}>$ {props.price.toFixed(2)}</Text>
+                <Text style={{ width: '28%'}}>{props.item.name}</Text>
+                <Text style={{ width: '28%', paddingStart:5}}>{props.item.type}</Text>
+                <Text style={{ width: '28%', paddingStart:8}}>$ {props.item.price.toFixed(2)}</Text>
             <View style={{ flexDirection: 'row' }}>
-                <Ionicons style={{ paddingRight: 15 }} name="create-outline" size={20} />
-                <Ionicons name="trash-outline" size={20} onPress = {() => {}} />
+                <Ionicons style={{ paddingRight: 15 }} name="create-outline" size={20} onPress = {() => {props.edit()}}/>
+                <Ionicons name="trash-outline" size={20} onPress = {() => {props.onDelete()}} />
             </View>
         </View>
     )

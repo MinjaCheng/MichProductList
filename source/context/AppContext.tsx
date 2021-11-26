@@ -1,10 +1,9 @@
 import React, {createContext, FC, useState } from "react";
-import { PressableAndroidRippleConfig } from "react-native";
 
 export interface Item {
     name: string,
     type: string,
-    price: number
+    price: number,
 }
 
 interface IAppContext {

@@ -3,10 +3,11 @@ import { Picker } from '@react-native-picker/picker'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { FC, useContext, useEffect, useState } from 'react'
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { AppContext } from '../context/AppContext'
+import { AppContext, Item } from '../context/AppContext'
 import { StackScreens } from '../helpers/types'
 
-const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = (props) => {
+
+const AddorEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = (props) => {
 
     const params = props.route.params;
     const context = useContext(AppContext);
@@ -36,7 +37,7 @@ const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = 
         }
     }, [name, price, selectedProductType]);
 
-    const addProduct = () => {
+    const createNewProduct = () => {
         const priceInt = parseInt(price);
         const newItems = [...context!.items, { name: name, type: selectedProductType, price: priceInt }]
         context?.setItems(newItems)
@@ -59,7 +60,7 @@ const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = 
             <TextInput placeholder="Price" keyboardType='numeric' onChangeText={(number) => { setPrice(number) }} style={styles.input} />
             {showIntegratedInfo && (<Text style={styles.textInfoIntegrated}>Integrated products may be anywhere within the range of 1000 to 2600 dollars.</Text>)}            
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.buttonSave, { backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green' }]} disabled={disable} onPress={addProduct}>
+                <TouchableOpacity style={[styles.buttonSave, { backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green' }]} disabled={disable} onPress={createNewProduct}>
                     <Text style={styles.textButtonSave}>SAVE</Text>
                     <Ionicons name='download-outline' size={32} color="white" />
                 </TouchableOpacity>
@@ -72,7 +73,7 @@ const AddAndEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = 
     )
 }
 
-export default AddAndEditScreen
+export default AddorEditScreen
 
 const styles = StyleSheet.create({
     container: {
