@@ -5,11 +5,14 @@ import { Item } from '../context/AppContext'
 
 interface IProduct {
     item: Item,
+}
+
+interface IProductComponents extends IProduct {
     edit: () => void,
     onDelete: () => void,
 }
 
-const Product: FC<IProduct> = (props) => {
+const Product: FC<IProductComponents> = (props) => {
     return (
         <View style={styles.productContainer}>
                 <Text style={{ width: '28%'}}>{props.item.name}</Text>

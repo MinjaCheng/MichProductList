@@ -10,11 +10,18 @@ import { AppContext, Item } from '../context/AppContext';
 const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => {
     const context = useContext(AppContext);
 
+    const deleteProduct = (name: string) => {
+        if (context?.items) {
+            const filteredData = context?.items.filter(item => item.name !== name);
+            context?.setItems(filteredData);
+        }
+    }
+    
     const render = ({ item }: { item: Item }) => {
         return (
             <Product
                 item={item}
-                edit={() => { props.navigation.navigate("AddorEdit", { title: "Edit Product" }) }}
+                edit={() => { props.navigation.navigate("AddorEdit", { title: "Edit Product", addProduct: false, productName: item.name, productType: item.type, productPrice: item.price.toString()   }) }}
                 onDelete={() => {
                     Alert.alert("", "Are you sure you want to delete this product?", [
                         {
@@ -28,13 +35,6 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
                 }}
             />
         );
-    }
-
-    const deleteProduct = (name: string) => {
-        if (context?.items) {
-            const filteredData = context?.items?.filter(item => item.name !== name);
-            context?.setItems(filteredData);
-        }
     }
 
     return (
@@ -55,17 +55,16 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
                 }}
             />
             <View style={styles.listContainer}>
-                {context?.items && (<FlatList
+                <FlatList
+                    ListEmptyComponent={<Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>}
                     data={context?.items}
                     renderItem={render}
                     keyExtractor={(item, index) => index.toString()}
-                />)}
-                {!context?.items && (
-                    <Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>)}
+                />
             </View>
 
             <View style={styles.addButtonContainer}>
-                <Ionicons onPress={() => { props.navigation.navigate("AddorEdit", { title: "Create New Product" }) }} name='add-circle' size={65} color='purple' />
+                <Ionicons onPress={() => { props.navigation.navigate("AddorEdit", { title: "Create New Product", addProduct: true, productName: "", productType: "Product Type", productPrice: "" }) }} name='add-circle' size={65} color='purple' />
             </View>
         </SafeAreaView>
     );
