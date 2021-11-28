@@ -8,7 +8,7 @@ interface IProduct {
 }
 
 interface IProductComponents extends IProduct {
-    edit: () => void,
+    onEdit: () => void,
     onDelete: () => void,
 }
 
@@ -19,7 +19,7 @@ const Product: FC<IProductComponents> = (props) => {
                 <Text style={{ width: '28%', paddingStart:5}}>{props.item.type}</Text>
                 <Text style={{ width: '28%', paddingStart:8}}>$ {props.item.price.toFixed(2)}</Text>
             <View style={{ flexDirection: 'row' }}>
-                <Ionicons style={{ paddingRight: 15 }} name="create-outline" size={20} onPress = {() => {props.edit()}}/>
+                <Ionicons style={{ paddingRight: 15 }} name="create-outline" size={20} onPress = {() => {props.onEdit()}}/>
                 <Ionicons name="trash-outline" size={20} onPress = {() => {props.onDelete()}} />
             </View>
         </View>

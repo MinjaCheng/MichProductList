@@ -5,6 +5,8 @@ import Product from '../Components/Product';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { StackScreens } from '../helpers/types';
 import { AppContext, Item } from '../context/AppContext';
+import { translate } from '../helpers/translation/translation';
+import { tokens } from '../helpers/translation/appStructure';
 
 
 const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => {
@@ -16,18 +18,27 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
             context?.setItems(filteredData);
         }
     }
-    
+
     const render = ({ item }: { item: Item }) => {
         return (
             <Product
                 item={item}
-                edit={() => { props.navigation.navigate("AddorEdit", { title: "Edit Product", addProduct: false, productName: item.name, productType: item.type, productPrice: item.price.toString()   }) }}
+                onEdit={() => {
+                    props.navigation.navigate("AddorEdit", {
+                        title: translate(tokens.screens.homeScreen.editProductNavigationTitle), 
+                        addProduct: false,
+                        productName: item.name,
+                        productType: item.type,
+                        productPrice: item.price.toString()
+                    })
+                }}
                 onDelete={() => {
-                    Alert.alert("", "Are you sure you want to delete this product?", [
+                    Alert.alert("", translate(tokens.screens.homeScreen.deleteInfo), [
                         {
-                            text: "CANCEL"
+                            text: translate(tokens.screens.homeScreen.cancelButton)
                         }, {
-                            text: "DELETE", onPress: () => {
+                            text: translate(tokens.screens.homeScreen.deleteButton), 
+                            onPress: () => {
                                 deleteProduct(item.name)
                             }
                         }
@@ -40,12 +51,12 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.mainTextContainer}>
-                <Text style={styles.mainText}>Items</Text>
+                <Text style={styles.mainText}>{translate(tokens.screens.homeScreen.mainText)}</Text>
             </View>
             <View style={styles.subtitleContainer}>
-                <Text style={styles.subtitleText}>Name</Text>
-                <Text style={styles.subtitleText}>Type</Text>
-                <Text style={styles.subtitleText}>Price</Text>
+                <Text style={styles.subtitleText}>{translate(tokens.screens.homeScreen.productName)}</Text>
+                <Text style={styles.subtitleText}>{translate(tokens.screens.homeScreen.productType)}</Text>
+                <Text style={styles.subtitleText}>{translate(tokens.screens.homeScreen.productPrice)}</Text>
             </View>
             <View
                 style={{
@@ -56,15 +67,22 @@ const HomeScreen: FC<NativeStackScreenProps<StackScreens, "Home">> = (props) => 
             />
             <View style={styles.listContainer}>
                 <FlatList
-                    ListEmptyComponent={<Text style={styles.listTextInfo}>You do not have any products. Press the purple button below to add a new product.</Text>}
+                    ListEmptyComponent={<Text style={styles.listTextInfo}>{translate(tokens.screens.homeScreen.noProductInfo)}</Text>}
                     data={context?.items}
                     renderItem={render}
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View>
-
             <View style={styles.addButtonContainer}>
-                <Ionicons onPress={() => { props.navigation.navigate("AddorEdit", { title: "Create New Product", addProduct: true, productName: "", productType: "Product Type", productPrice: "" }) }} name='add-circle' size={65} color='purple' />
+                <Ionicons onPress={() => {
+                    props.navigation.navigate("AddorEdit", {
+                        title: translate(tokens.screens.homeScreen.createNewProductTitle),
+                        addProduct: true, productName: "",
+                        productType: "Product Type",
+                        productPrice: ""
+                    })
+                }}
+                    name='add-circle' size={65} color='purple' />
             </View>
         </SafeAreaView>
     );

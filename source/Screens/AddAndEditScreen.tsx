@@ -2,9 +2,10 @@ import { Ionicons } from '@expo/vector-icons'
 import { Picker } from '@react-native-picker/picker'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import React, { FC, useContext, useEffect, useState } from 'react'
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import Product from '../Components/Product'
+import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { AppContext, Item } from '../context/AppContext'
+import { tokens } from '../helpers/translation/appStructure'
+import { translate } from '../helpers/translation/translation'
 import { StackScreens } from '../helpers/types'
 
 
@@ -15,7 +16,7 @@ const AddorEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = (
     const [disable, setDisable] = useState(false);
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
-    const [selectedProductType, setSelectedProductType] = useState("Product Type");
+    const [selectedProductType, setSelectedProductType] = useState(translate(tokens.screens.addAndEditScreen.pickerProductType));
     const [showIntegratedInfo, setShowIntegratedInfo] = useState(false);
 
     useEffect(() => {
@@ -50,53 +51,64 @@ const AddorEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = (
         props.navigation.navigate("Home");
     }
 
-    const editProduct = (updateProduct: Item) => {
+    const editProduct = (oldName: string, updateProduct: Item) => {
         context?.items.filter((currentProduct: Item) => {
-            if (currentProduct.name != updateProduct.name) {
-                currentProduct.name = updateProduct.name;
-                currentProduct.type = updateProduct.type;
-                currentProduct.price = updateProduct.price;
-                context?.setItems([...context.items]);
-                props.navigation.navigate("Home");
-            } else {
-
+            if (currentProduct.name === oldName) {
+                if (!productExist(updateProduct.name)) {
+                    currentProduct.name = updateProduct.name;
+                    currentProduct.type = updateProduct.type;
+                    currentProduct.price = updateProduct.price;
+                    context?.setItems([...context.items]);
+                    props.navigation.navigate("Home");
+                }
+                else {
+                    Alert.alert("", translate(tokens.screens.addAndEditScreen.productExistInfo), [
+                        {
+                            text: "OK"
+                        },
+                    ])
+                }
             }
-
         });
+    }
 
+    const productExist = (name: string) => {
+        for (let product of context!.items) {
+            if (product.name === name) {
+                return true;
+            }
+        }
+        return false;
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>{params.title}</Text>
-            <TextInput placeholder="Name" onChangeText={setName} defaultValue={name} style={styles.input} />
+            <TextInput placeholder={translate(tokens.screens.addAndEditScreen.inputProductName)} onChangeText={setName} defaultValue={name} style={styles.input} />
             <Picker style={[styles.input, { color: 'grey' }]}
                 selectedValue={selectedProductType}
                 onValueChange={(itemValue, itemIndex) => setSelectedProductType(itemValue)
-
                 }>
-                <Picker.Item label="Product Type" value="Product Type" />
-                <Picker.Item label="Integrated" value="Integrated" />
-                <Picker.Item label="Perpherial" value="Perpherial" />
+                <Picker.Item label={translate(tokens.screens.addAndEditScreen.pickerProductType)} value="Product Type" />
+                <Picker.Item label={translate(tokens.screens.addAndEditScreen.pickerIntegrated)} value="Integrated" />
+                <Picker.Item label={translate(tokens.screens.addAndEditScreen.pickerPerpherial)} value="Perpherial" />
             </Picker>
-            <TextInput placeholder="Price" keyboardType='numeric' onChangeText={(number) => { setPrice(number) }} defaultValue={price} style={styles.input} />
-            {showIntegratedInfo && (<Text style={styles.textInfoIntegrated}>Integrated products may be anywhere within the range of 1000 to 2600 dollars.</Text>)}
+            <TextInput placeholder={translate(tokens.screens.addAndEditScreen.inputProductPrice)} keyboardType='numeric' onChangeText={(number) => { setPrice(number) }} defaultValue={price} style={styles.input} />
+            {showIntegratedInfo && (<Text style={styles.textInfoIntegrated}>{translate(tokens.screens.addAndEditScreen.IntegratedpriceRange)}</Text>)}
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.buttonSave, { backgroundColor: disable ? 'rgba(52, 52, 52, 0.15)' : 'green' }]} disabled={disable} onPress={() => {
                     if (params.addProduct) {
-                        if (context?.items.length == 0) {
+                        if (!productExist(name)) {
                             createNewProduct()
-                        } 
-                        else {
-                            for (let product of context!.items) {
-                                
-                                if (product.name != name) {
-                                    createNewProduct()
-                                }
-                            }
+                        } else {
+                            Alert.alert("", translate(tokens.screens.addAndEditScreen.productExistInfo), [
+                                {
+                                    text: "OK"
+                                },
+                            ])
                         }
                     } else {
-                        editProduct({
+                        editProduct(params.productName, {
                             name: name,
                             type: selectedProductType,
                             price: parseInt(price)
@@ -104,11 +116,12 @@ const AddorEditScreen: FC<NativeStackScreenProps<StackScreens, "AddorEdit">> = (
                     }
                 }
                 }>
-                    <Text style={styles.textButtonSave}>SAVE</Text>
+                    <Text style={styles.textButtonSave}>{translate(tokens.screens.addAndEditScreen.saveButton)}</Text>
                     <Ionicons name='download-outline' size={32} color="white" />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.buttonCancel} onPress={() => { props.navigation.pop() }}>
-                    <Text style={styles.textButtonCancel}>CANCEL</Text>
+                    <Text style={styles.textButtonCancel}>{translate(tokens.screens.addAndEditScreen.cancelButton)}
+                    </Text>
                     <Ionicons name='close-circle-outline' size={33} />
                 </TouchableOpacity>
             </View>
